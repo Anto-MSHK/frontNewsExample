@@ -74,7 +74,7 @@ const NewsEditorPage: React.FC = () => {
     }
 
     if (isEditMode && id) {
-      dispatch(fetchNewsById(Number(id)));
+      dispatch(fetchNewsById(id));
     }
 
     // Очищаем при размонтировании

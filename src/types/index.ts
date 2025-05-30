@@ -40,6 +40,7 @@ export interface News {
   author?: User;
   agency?: Agency;
   category?: Category;
+  urlToImage: string;
 }
 
 // Типы для запросов

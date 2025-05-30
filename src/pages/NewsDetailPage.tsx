@@ -41,7 +41,7 @@ const formatDate = (dateString: string | null): string => {
 
 const NewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const newsId = Number(id);
+  const newsId = id;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -51,6 +51,7 @@ const NewsDetailPage: React.FC = () => {
   // Загружаем данные новости при монтировании компонента
   useEffect(() => {
     if (newsId) {
+      console.log(`Fetching news with ID: ${newsId}`);
       dispatch(fetchNewsById(newsId));
     }
 

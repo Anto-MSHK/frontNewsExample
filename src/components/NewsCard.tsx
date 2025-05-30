@@ -5,11 +5,10 @@ import {
   CardMedia,
   Typography,
   Button,
-  Grid,
   Box,
   Chip,
 } from "@mui/material";
-import { CalendarToday, Person, Business } from "@mui/icons-material";
+import { CalendarToday, Person, Business, Image } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
 import { News } from "../types";
 
@@ -51,12 +50,51 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
         },
       }}
     >
-      <CardMedia
-        component="img"
-        height="140"
-        image={`https://source.unsplash.com/random?news,article&sig=${news.id}`} // Placeholder изображение
-        alt={news.title}
-      />
+      {" "}
+      {news.urlToImage ? (
+        <CardMedia
+          component="img"
+          height="140"
+          image={news.urlToImage}
+          alt={news.title}
+        />
+      ) : (
+        <Box
+          sx={{
+            height: 140,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            color: "white",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(255, 255, 255, 0.1)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Image sx={{ fontSize: 40, mb: 1, opacity: 0.8 }} />
+            <Typography
+              variant="caption"
+              sx={{ opacity: 0.9, textAlign: "center", px: 2 }}
+            >
+              {news.category?.name || "Новость"}
+            </Typography>
+          </Box>
+        </Box>
+      )}
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography
           gutterBottom

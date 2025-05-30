@@ -17,7 +17,13 @@ import {
 // Асинхронные экшены
 export const fetchNews = createAsyncThunk(
   "news/fetchNews",
-  async ({ filters, rejectWithValue }: { filters?: NewsFilters, rejectWithValue: any }) => {
+  async ({
+    filters,
+    rejectWithValue,
+  }: {
+    filters?: NewsFilters;
+    rejectWithValue: any;
+  }) => {
     try {
       const news = await getNews(filters);
       return news;
@@ -31,7 +37,7 @@ export const fetchNews = createAsyncThunk(
 
 export const fetchNewsById = createAsyncThunk(
   "news/fetchNewsById",
-  async (id: number, { rejectWithValue }) => {
+  async (id: any, { rejectWithValue }) => {
     try {
       const news = await getNewsById(id);
       return news;
