@@ -4,6 +4,7 @@ import PrivateRoute from "./PrivateRoute";
 
 import AdminCategoriesPage from "../pages/admin/CategoriesPage";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 import Layout from "../components/Layout";
 import HomePage from "../pages/HomePage";
 import NewsDetailPage from "../pages/NewsDetailPage";
@@ -12,11 +13,14 @@ import AgencyNewsPage from "../pages/AgencyNewsPage";
 import NewsEditorPage from "../pages/NewsEditorPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
-
 const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
   {
     path: "/",

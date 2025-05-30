@@ -48,7 +48,19 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email?: string;
+  role?: UserRole;
+  agencyId?: number;
+}
+
 export interface LoginResponse {
+  accessToken: string;
+}
+
+export interface RegisterResponse {
   accessToken: string;
 }
 

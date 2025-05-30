@@ -9,15 +9,27 @@ import {
   Alert,
   CircularProgress,
   Link,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { loginUser, clearError } from "../store/slices/authSlice";
+import { registerUser, clearError } from "../store/slices/authSlice";
+import { UserRole } from "../types";
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [formErrors, setFormErrors] = useState({ username: "", password: "" });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [formErrors, setFormErrors] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+  });
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -47,15 +59,36 @@ const LoginPage: React.FC = () => {
   // Валидация формы
   const validateForm = () => {
     let valid = true;
-    const errors = { username: "", password: "" };
+    const errors = {
+      username: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
+    };
 
     if (!username.trim()) {
       errors.username = "Имя пользователя обязательно";
+      valid = false;
+    } else if (username.length < 3) {
+      errors.username = "Имя пользователя должно содержать минимум 3 символа";
       valid = false;
     }
 
     if (!password) {
       errors.password = "Пароль обязателен";
+      valid = false;
+    } else if (password.length < 6) {
+      errors.password = "Пароль должен содержать минимум 6 символов";
+      valid = false;
+    }
+
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Пароли не совпадают";
+      valid = false;
+    }
+
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Некорректный формат email";
       valid = false;
     }
 
@@ -70,7 +103,13 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    dispatch(loginUser({ username, password }));
+    const registerData = {
+      username,
+      password,
+      email: email || undefined,
+    };
+
+    dispatch(registerUser(registerData));
   };
 
   return (
@@ -84,7 +123,7 @@ const LoginPage: React.FC = () => {
           }}
         >
           <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Вход в систему
+            Регистрация
           </Typography>
 
           {error && (
@@ -112,13 +151,28 @@ const LoginPage: React.FC = () => {
 
             <TextField
               margin="normal"
+              fullWidth
+              id="email"
+              label="Email (опционально)"
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={!!formErrors.email}
+              helperText={formErrors.email}
+              disabled={loading}
+            />
+
+            <TextField
+              margin="normal"
               required
               fullWidth
               name="password"
               label="Пароль"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={!!formErrors.password}
@@ -126,6 +180,20 @@ const LoginPage: React.FC = () => {
               disabled={loading}
             />
 
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Подтвердите пароль"
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!formErrors.confirmPassword}
+              helperText={formErrors.confirmPassword}
+              disabled={loading}
+            />
             <Button
               type="submit"
               fullWidth
@@ -133,12 +201,12 @@ const LoginPage: React.FC = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : "Войти"}
+              {loading ? <CircularProgress size={24} /> : "Зарегистрироваться"}
             </Button>
 
             <Box sx={{ textAlign: "center", mt: 2 }}>
-              <Link component={RouterLink} to="/register" variant="body2">
-                Нет аккаунта? Зарегистрироваться
+              <Link component={RouterLink} to="/login" variant="body2">
+                Уже есть аккаунт? Войти
               </Link>
             </Box>
           </Box>
@@ -148,4 +216,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

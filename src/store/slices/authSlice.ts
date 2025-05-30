@@ -1,6 +1,16 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { login as apiLogin, logout as apiLogout } from "../../api/authApi";
-import { AuthState, LoginRequest, User, UserRole } from "../../types";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  logout as apiLogout,
+} from "../../api/authApi";
+import {
+  AuthState,
+  LoginRequest,
+  RegisterRequest,
+  User,
+  UserRole,
+} from "../../types";
 import { jwtDecode } from "jwt-decode";
 
 // Асинхронный экшн для логина
@@ -12,6 +22,21 @@ export const loginUser = createAsyncThunk(
       return result;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Ошибка входа");
+    }
+  }
+);
+
+// Асинхронный экшн для регистрации
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (userData: RegisterRequest, { rejectWithValue }) => {
+    try {
+      const result = await apiRegister(userData);
+      return result;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Ошибка регистрации"
+      );
     }
   }
 );
@@ -95,6 +120,24 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as string) || "Ошибка входа";
+      })
+      // Обработка регистрации
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        registerUser.fulfilled,
+        (state, action: PayloadAction<{ token: string; user: User }>) => {
+          state.loading = false;
+          state.isAuthenticated = true;
+          state.user = action.payload.user;
+          state.token = action.payload.token;
+        }
+      )
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) || "Ошибка регистрации";
       })
       // Обработка выхода
       .addCase(logoutUser.fulfilled, (state) => {
